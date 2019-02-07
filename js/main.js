@@ -4,7 +4,7 @@ window.onload = handleOnLoad;
 
 document.querySelector('.form').addEventListener('submit', handleSubmit);
 document.querySelector('.form--submit').addEventListener('submit', handleSubmit);
-document.querySelector('.main').addEventListener('click', handleClick);
+document.querySelector('body').addEventListener('click', handleClick);
 document.querySelector('.input--search').addEventListener('keyup', handleChange);
 document.querySelector('.main').addEventListener('keypress', handleKeypress);
 
@@ -59,6 +59,8 @@ function handleClick(event) {
     updateIdeaQuality(event.target, -1);
   } else if (event.target.closest('.article')) {
     event.target.onblur = saveEditedIdea;
+  } else if (event.target.closest('.div--buttons')) {
+    toggleFilter(classList);
   }
 }
 
@@ -99,5 +101,21 @@ function handleKeypress(event) {
   if (event.key === 'Enter' && event.target.closest('.article') !== null) {
     saveEditedIdea(event);
     event.target.blur();
+  }
+}
+
+function toggleFilter(classList) {
+  let filter = null;
+  classList.contains('button--all') && (filter = 'show all')
+  classList.contains('button--swill') && (filter = 0);
+  classList.contains('button--plausible') && (filter = 1);
+  classList.contains('button--genius') && (filter = 2);
+  if (filter !== null && filter !== 'show all') {
+    document.querySelector('.main').innerHTML = '';
+    const filteredIdeas = ideas.filter(idea => idea.quality === filter);
+    filteredIdeas.forEach(idea => prependIdeaCard(idea));
+  } else if (filter === 'show all') {
+    document.querySelector('.main').innerHTML = '';
+    ideas.forEach(idea => prependIdeaCard(idea));
   }
 }
