@@ -4,7 +4,8 @@ window.onload = handleOnLoad;
 
 document.querySelector('.form').addEventListener('submit', handleSubmit);
 document.querySelector('.form--submit').addEventListener('submit', handleSubmit);
-document.querySelector('.main').addEventListener('click', handleClick)
+document.querySelector('.main').addEventListener('click', handleClick);
+document.querySelector('.input--search').addEventListener('keyup', handleChange);
 
 function handleOnLoad() {
   if(localStorage.getItem('ideas')) {
@@ -72,4 +73,13 @@ function updateIdeaQuality(target, direction) {
   ideas = ideaToUpdate.updateQuality(ideas, direction);
   const qualitySpan = document.querySelector(`.span--${id}`)
   qualitySpan.innerText = qualities[ideaToUpdate.quality];
+}
+
+function handleChange(event) {
+  const query = event.target.value;
+  document.querySelector('.main').innerHTML = '';
+  const matchingIdeas = ideas.filter(idea => {
+    return idea.title.includes(query) || idea.body.includes(query);
+  });
+  matchingIdeas.forEach(idea => prependIdeaCard(idea));
 }
