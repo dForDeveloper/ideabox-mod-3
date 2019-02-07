@@ -38,7 +38,7 @@ function prependIdeaCard(idea) {
     <h3>${title}</h3>
     <p>${body}</p>
     <div>
-      Quality: ${qualities[quality]}
+      Quality: <span class=${'span--' + id}>${qualities[quality]}</span>
       <button class="button--decrease">Decrease Quality</button>
       <button class="button--increase">Increase Quality</button>
       <button class="button--delete">Delete</button>
@@ -52,9 +52,9 @@ function handleClick(event) {
   if (classList.contains('button--delete')) {
     deleteIdea(event.target);
   } else if (classList.contains('button--increase')) {
-    increaseIdeaQuality(event.target);
+    updateIdeaQuality(event.target, 1);
   } else if (classList.contains('button--decrease')) {
-    decreaseIdeaQuality(event.target);
+    updateIdeaQuality(event.target, -1);
   }
 }
 
@@ -65,10 +65,11 @@ function deleteIdea(target) {
   target.closest('.article').remove();
 }
 
-function increaseIdeaQuality(target) {
-
-}
-
-function decreaseIdeaQuality(target) {
-
+function updateIdeaQuality(target, direction) {
+  const qualities = ['swill', 'plausible', 'genius'];  
+  const id = parseInt(target.closest('.article').id);
+  const ideaToUpdate = ideas.find(idea => idea.id === id);
+  ideas = ideaToUpdate.updateQuality(ideas, direction);
+  const qualitySpan = document.querySelector(`.span--${id}`)
+  qualitySpan.innerText = qualities[ideaToUpdate.quality];
 }

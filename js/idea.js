@@ -15,4 +15,24 @@ class Idea {
     this.save(newIdeas)
     return newIdeas;
   }
+
+  updateQuality(ideas, direction) {
+    const newIdeas = ideas.map(idea => {
+      if (idea.id === this.id) {
+        switch (direction) {
+          case -1:
+            this.quality = Math.max(0, this.quality + direction);
+            break;
+            case 1:
+            this.quality = Math.min(2, this.quality + direction);
+            break;
+            default:
+            break;
+          }
+        }
+      return idea;
+    });
+    this.save(newIdeas)
+    return newIdeas;
+  }
 }
