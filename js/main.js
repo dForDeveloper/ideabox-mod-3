@@ -6,6 +6,7 @@ document.querySelector('.form').addEventListener('submit', handleSubmit);
 document.querySelector('.form--submit').addEventListener('submit', handleSubmit);
 document.querySelector('.main').addEventListener('click', handleClick);
 document.querySelector('.input--search').addEventListener('keyup', handleChange);
+document.querySelector('.main').addEventListener('keypress', handleKeypress);
 
 function handleOnLoad() {
   if(localStorage.getItem('ideas')) {
@@ -92,4 +93,11 @@ function saveEditedIdea(event) {
   const body = document.querySelector(`.article[data-id='${id}'] p`);
   const ideaToEdit = ideas.find(idea => idea.id === id);
   ideas = ideaToEdit.edit(ideas, title.innerText, body.innerText);
+}
+
+function handleKeypress(event) {
+  if (event.key === 'Enter' && event.target.closest('.article') !== null) {
+    saveEditedIdea(event);
+    event.target.blur();
+  }
 }
