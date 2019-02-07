@@ -23,16 +23,28 @@ class Idea {
           case -1:
             this.quality = Math.max(0, this.quality + direction);
             break;
-            case 1:
+          case 1:
             this.quality = Math.min(2, this.quality + direction);
             break;
-            default:
+          default:
             break;
           }
         }
       return idea;
     });
     this.save(newIdeas)
+    return newIdeas;
+  }
+
+  edit(ideas, title, body) {
+    const newIdeas = ideas.map(idea => {
+      if (idea.id === this.id) {
+        this.title = title;
+        this.body = body;
+      }
+      return idea;
+    });
+    this.save(newIdeas);
     return newIdeas;
   }
 }

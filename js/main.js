@@ -33,13 +33,13 @@ function prependIdeaCard(idea) {
   const { title, body, quality, id } = idea;
   const ideaCard = document.createElement('article');
   const qualities = ['swill', 'plausible', 'genius'];
-  ideaCard.id = id;
+  ideaCard.dataset.id = id;
   ideaCard.classList.add('article')
   ideaCard.innerHTML = `
-    <h3>${title}</h3>
-    <p>${body}</p>
+    <h3 contenteditable="true">${title}</h3>
+    <p contenteditable="true">${body}</p>
     <div>
-      Quality: <span class=${'span--' + id}>${qualities[quality]}</span>
+      Quality: <span>${qualities[quality]}</span>
       <button class="button--decrease">Decrease Quality</button>
       <button class="button--increase">Increase Quality</button>
       <button class="button--delete">Delete</button>
@@ -56,11 +56,13 @@ function handleClick(event) {
     updateIdeaQuality(event.target, 1);
   } else if (classList.contains('button--decrease')) {
     updateIdeaQuality(event.target, -1);
+  } else if (event.target.closest('.article')) {
+    event.target.onblur = saveEditedIdea;
   }
 }
 
 function deleteIdea(target) {
-  const id = parseInt(target.closest('.article').id);
+  const id = parseInt(target.closest('.article').dataset.id);
   const ideaToDelete = ideas.find(idea => idea.id === id)
   ideas = ideaToDelete.delete(ideas);
   target.closest('.article').remove();
@@ -68,10 +70,10 @@ function deleteIdea(target) {
 
 function updateIdeaQuality(target, direction) {
   const qualities = ['swill', 'plausible', 'genius'];  
-  const id = parseInt(target.closest('.article').id);
+  const id = parseInt(target.closest('.article').dataset.id);
   const ideaToUpdate = ideas.find(idea => idea.id === id);
   ideas = ideaToUpdate.updateQuality(ideas, direction);
-  const qualitySpan = document.querySelector(`.span--${id}`)
+  const qualitySpan = document.querySelector(`.article[data-id='${id}'] span`);
   qualitySpan.innerText = qualities[ideaToUpdate.quality];
 }
 
@@ -82,4 +84,12 @@ function handleChange(event) {
     return idea.title.includes(query) || idea.body.includes(query);
   });
   matchingIdeas.forEach(idea => prependIdeaCard(idea));
+}
+
+function saveEditedIdea(event) {
+  const id = parseInt(event.target.closest('.article').dataset.id);
+  const title = document.querySelector(`.article[data-id='${id}'] h3`);
+  const body = document.querySelector(`.article[data-id='${id}'] p`);
+  const ideaToEdit = ideas.find(idea => idea.id === id);
+  ideas = ideaToEdit.edit(ideas, title.innerText, body.innerText);
 }
